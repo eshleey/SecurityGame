@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Waypoint
   - NPC
+  - Cop
   layers:
   - Default
   - TransparentFX

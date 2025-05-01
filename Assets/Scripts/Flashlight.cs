@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Flashlight : MonoBehaviour
 {
+    public GameObject inventoryPanel;
     public GameObject spotLight;
     private bool isOn = false;
 
@@ -12,9 +13,10 @@ public class Flashlight : MonoBehaviour
 
     void Update()
     {
+        if (inventoryPanel != null && inventoryPanel.activeSelf) return;
+
         if (!isOn)
         {
-            // Fenerin ýþýðýný açma
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 spotLight.SetActive(true);
@@ -23,7 +25,6 @@ public class Flashlight : MonoBehaviour
         }
         else
         {
-            // Fenerin ýþýðýný kapatma
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 spotLight.SetActive(false);
@@ -31,4 +32,5 @@ public class Flashlight : MonoBehaviour
             }
         }
     }
+
 }

@@ -1,9 +1,12 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class InventoryPanelController : MonoBehaviour
 {
+
+    public GameObject cop;
     public GameObject panel;
     public GameObject playerCamera;
     public GameObject itemPool;
@@ -13,6 +16,8 @@ public class InventoryPanelController : MonoBehaviour
     public List<Button> buttons;
     public float scaleFactor = 1.2f;
     public float animationSpeed = 10f;
+    //public GameObject cop;  // Bu satırda kop'un bir referansını tanımlıyoruz
+    
 
     private Transform currentHoveredButton;
     private Vector3 defaultScale = Vector3.one;
@@ -49,6 +54,7 @@ public class InventoryPanelController : MonoBehaviour
         }
     }
 
+
     public void OnButtonClick(string buttonID)
     {
         switch (buttonID)
@@ -66,7 +72,7 @@ public class InventoryPanelController : MonoBehaviour
                 break;
 
             case "InventoryButton3":
-                SelectItem("Detekt�r", 3);
+                SelectItem("Detektör", 3);
                 break;
 
             default:
@@ -82,9 +88,18 @@ public class InventoryPanelController : MonoBehaviour
             if (panel != null)
             {
                 panel.SetActive(isActive);
+
+                if (isActive)
+                {
+                    // Panel açıldığında sadece rotayı sıfırla, pozisyonu değiştirme
+                    cop.transform.localRotation = Quaternion.Euler(-60f, -30f, 0f); // Rotasyonu sıfırlama
+                    
+                }
+                
             }
         }
     }
+
 
     public void SetHoveredButton(Transform button)
     {
@@ -96,17 +111,28 @@ public class InventoryPanelController : MonoBehaviour
 
     void SelectItem(string itemName, int itemIndex)
     {
-        Debug.Log(itemName + " al�nd�.");
+        
+        // Aynı itemi tekrar seçmeye çalışıyorsa, fonksiyonu sonlandır
+        if (previousIndex == itemIndex)
+        {
+            Debug.Log(itemName + " zaten seçili.");
+            return; // Aynı itemi tekrar seçmeyi engelliyoruz
+        }
+
+        Debug.Log(itemName + " alındı.");
         if (previousIndex != -1)
         {
             items[previousIndex].SetActive(false);
             items[previousIndex].transform.SetParent(itemPool.transform, false);
             items[previousIndex].transform.localPosition = items[previousIndex].transform.localPosition - new Vector3(0.502507f, -2.7100389f, 2.703206f);
         }
+
         items[itemIndex].SetActive(true);
         items[itemIndex].transform.SetParent(playerCamera.transform, false);
         items[itemIndex].transform.localPosition = items[itemIndex].transform.localPosition + new Vector3(0.502507f, -2.7100389f, 2.703206f);
-        previousIndex = itemIndex;
+
+        previousIndex = itemIndex;  // Seçilen item'ı kaydediyoruz
         panel.SetActive(false);
     }
+
 }
